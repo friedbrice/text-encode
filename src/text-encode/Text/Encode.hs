@@ -168,252 +168,252 @@ data Casing
   | ScreamingSnake
   | Snake
 
-instance CaseConversion Camel Camel where
+instance CaseConversion 'Camel 'Camel where
   {-# INLINE encoding #-}
   encoding = id
 
   {-# INLINE decoding #-}
   decoding = id
 
-instance CaseConversion Camel Kebab where
+instance CaseConversion 'Camel 'Kebab where
   {-# INLINE encoding #-}
   encoding = toKebab . fromHumps
 
   {-# INLINE decoding #-}
   decoding = toCamel . fromKebab
 
-instance CaseConversion Camel Pascal where
+instance CaseConversion 'Camel 'Pascal where
   {-# INLINE encoding #-}
   encoding = toPascal . fromHumps
 
   {-# INLINE decoding #-}
   decoding = toCamel . fromHumps
 
-instance CaseConversion Camel QuietSnake where
+instance CaseConversion 'Camel 'QuietSnake where
   {-# INLINE encoding #-}
   encoding = toQuietSnake . fromHumps
 
   {-# INLINE decoding #-}
   decoding = toCamel . fromSnake
 
-instance CaseConversion Camel ScreamingSnake where
+instance CaseConversion 'Camel 'ScreamingSnake where
   {-# INLINE encoding #-}
   encoding = toScreamingSnake . fromHumps
 
   {-# INLINE decoding #-}
   decoding = toCamel . fromSnake
 
-instance CaseConversion Camel Snake where
+instance CaseConversion 'Camel 'Snake where
   {-# INLINE encoding #-}
   encoding = toSnake . fromHumps
 
   {-# INLINE decoding #-}
   decoding = toCamel . fromSnake
 
-instance CaseConversion Kebab Camel where
+instance CaseConversion 'Kebab 'Camel where
   {-# INLINE encoding #-}
   encoding = toCamel . fromKebab
 
   {-# INLINE decoding #-}
   decoding = toKebab . fromHumps
 
-instance CaseConversion Kebab Kebab where
+instance CaseConversion 'Kebab 'Kebab where
   {-# INLINE encoding #-}
   encoding = id
 
   {-# INLINE decoding #-}
   decoding = id
 
-instance CaseConversion Kebab Pascal where
+instance CaseConversion 'Kebab 'Pascal where
   {-# INLINE encoding #-}
   encoding = toPascal . fromKebab
 
   {-# INLINE decoding #-}
   decoding = toKebab . fromHumps
 
-instance CaseConversion Kebab QuietSnake where
+instance CaseConversion 'Kebab 'QuietSnake where
   {-# INLINE encoding #-}
   encoding = toQuietSnake . fromKebab
 
   {-# INLINE decoding #-}
   decoding = toKebab . fromSnake
 
-instance CaseConversion Kebab ScreamingSnake where
+instance CaseConversion 'Kebab 'ScreamingSnake where
   {-# INLINE encoding #-}
   encoding = toScreamingSnake . fromKebab
 
   {-# INLINE decoding #-}
   decoding = toKebab . fromSnake
 
-instance CaseConversion Kebab Snake where
+instance CaseConversion 'Kebab 'Snake where
   {-# INLINE encoding #-}
   encoding = toSnake . fromKebab
 
   {-# INLINE decoding #-}
   decoding = toKebab . fromSnake
 
-instance CaseConversion Pascal Camel where
+instance CaseConversion 'Pascal 'Camel where
   {-# INLINE encoding #-}
   encoding = toCamel . fromHumps
 
   {-# INLINE decoding #-}
   decoding = toPascal . fromHumps
 
-instance CaseConversion Pascal Kebab where
+instance CaseConversion 'Pascal 'Kebab where
   {-# INLINE encoding #-}
   encoding = toKebab . fromHumps
 
   {-# INLINE decoding #-}
   decoding = toPascal . fromKebab
 
-instance CaseConversion Pascal Pascal where
+instance CaseConversion 'Pascal 'Pascal where
   {-# INLINE encoding #-}
   encoding = id
 
   {-# INLINE decoding #-}
   decoding = id
 
-instance CaseConversion Pascal QuietSnake where
+instance CaseConversion 'Pascal 'QuietSnake where
   {-# INLINE encoding #-}
   encoding = toQuietSnake . fromHumps
 
   {-# INLINE decoding #-}
   decoding = toPascal . fromSnake
 
-instance CaseConversion Pascal ScreamingSnake where
+instance CaseConversion 'Pascal 'ScreamingSnake where
   {-# INLINE encoding #-}
   encoding = toScreamingSnake . fromHumps
 
   {-# INLINE decoding #-}
   decoding = toPascal . fromSnake
 
-instance CaseConversion Pascal Snake where
+instance CaseConversion 'Pascal 'Snake where
   {-# INLINE encoding #-}
   encoding = toSnake . fromHumps
 
   {-# INLINE decoding #-}
   decoding = toPascal . fromSnake
 
-instance CaseConversion QuietSnake Camel where
+instance CaseConversion 'QuietSnake 'Camel where
   {-# INLINE encoding #-}
   encoding = toCamel . fromSnake
 
   {-# INLINE decoding #-}
   decoding = toQuietSnake . fromHumps
 
-instance CaseConversion QuietSnake Kebab where
+instance CaseConversion 'QuietSnake 'Kebab where
   {-# INLINE encoding #-}
   encoding = toKebab . fromSnake
 
   {-# INLINE decoding #-}
   decoding = toQuietSnake . fromKebab
 
-instance CaseConversion QuietSnake Pascal where
+instance CaseConversion 'QuietSnake 'Pascal where
   {-# INLINE encoding #-}
   encoding = toPascal . fromSnake
 
   {-# INLINE decoding #-}
   decoding = toQuietSnake . fromHumps
 
-instance CaseConversion QuietSnake QuietSnake where
+instance CaseConversion 'QuietSnake 'QuietSnake where
   {-# INLINE encoding #-}
   encoding = id
 
   {-# INLINE decoding #-}
   decoding = id
 
-instance CaseConversion QuietSnake ScreamingSnake where
+instance CaseConversion 'QuietSnake 'ScreamingSnake where
   {-# INLINE encoding #-}
   encoding = toScreamingSnake . fromSnake
 
   {-# INLINE decoding #-}
   decoding = toQuietSnake . fromSnake
 
-instance CaseConversion QuietSnake Snake where
+instance CaseConversion 'QuietSnake 'Snake where
   {-# INLINE encoding #-}
   encoding = toSnake . fromSnake
 
   {-# INLINE decoding #-}
   decoding = toQuietSnake . fromSnake
 
-instance CaseConversion ScreamingSnake Camel where
+instance CaseConversion 'ScreamingSnake 'Camel where
   {-# INLINE encoding #-}
   encoding = toCamel . fromSnake
 
   {-# INLINE decoding #-}
   decoding = toScreamingSnake . fromHumps
 
-instance CaseConversion ScreamingSnake Kebab where
+instance CaseConversion 'ScreamingSnake 'Kebab where
   {-# INLINE encoding #-}
   encoding = toKebab . fromSnake
 
   {-# INLINE decoding #-}
   decoding = toScreamingSnake . fromKebab
 
-instance CaseConversion ScreamingSnake Pascal where
+instance CaseConversion 'ScreamingSnake 'Pascal where
   {-# INLINE encoding #-}
   encoding = toPascal . fromSnake
 
   {-# INLINE decoding #-}
   decoding = toScreamingSnake . fromHumps
 
-instance CaseConversion ScreamingSnake QuietSnake where
+instance CaseConversion 'ScreamingSnake 'QuietSnake where
   {-# INLINE encoding #-}
   encoding = toQuietSnake . fromSnake
 
   {-# INLINE decoding #-}
   decoding = toScreamingSnake . fromSnake
 
-instance CaseConversion ScreamingSnake ScreamingSnake where
+instance CaseConversion 'ScreamingSnake 'ScreamingSnake where
   {-# INLINE encoding #-}
   encoding = id
 
   {-# INLINE decoding #-}
   decoding = id
 
-instance CaseConversion ScreamingSnake Snake where
+instance CaseConversion 'ScreamingSnake 'Snake where
   {-# INLINE encoding #-}
   encoding = toSnake . fromSnake
 
   {-# INLINE decoding #-}
   decoding = toScreamingSnake . fromSnake
 
-instance CaseConversion Snake Camel where
+instance CaseConversion 'Snake 'Camel where
   {-# INLINE encoding #-}
   encoding = toCamel . fromSnake
 
   {-# INLINE decoding #-}
   decoding = toSnake . fromHumps
 
-instance CaseConversion Snake Kebab where
+instance CaseConversion 'Snake 'Kebab where
   {-# INLINE encoding #-}
   encoding = toKebab . fromSnake
 
   {-# INLINE decoding #-}
   decoding = toSnake . fromKebab
 
-instance CaseConversion Snake Pascal where
+instance CaseConversion 'Snake 'Pascal where
   {-# INLINE encoding #-}
   encoding = toPascal . fromSnake
 
   {-# INLINE decoding #-}
   decoding = toSnake . fromHumps
 
-instance CaseConversion Snake QuietSnake where
+instance CaseConversion 'Snake 'QuietSnake where
   {-# INLINE encoding #-}
   encoding = toQuietSnake . fromSnake
 
   {-# INLINE decoding #-}
   decoding = toSnake . fromSnake
 
-instance CaseConversion Snake ScreamingSnake where
+instance CaseConversion 'Snake 'ScreamingSnake where
   {-# INLINE encoding #-}
   encoding = toScreamingSnake . fromSnake
 
   {-# INLINE decoding #-}
   decoding = toSnake . fromSnake
 
-instance CaseConversion Snake Snake where
+instance CaseConversion 'Snake 'Snake where
   {-# INLINE encoding #-}
   encoding = id
 

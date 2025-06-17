@@ -18,7 +18,7 @@ import qualified Database.Persist as Persistent
 data MyType = MyTypeFoo | MyTypeBar | MyTypeFooBar
     deriving stock (Read, Show, Eq, Ord, Bounded, Enum)
   deriving TextEncode
-    via DeriveTextEncode (Cased Pascal QuietSnake (DropPrefix "MyType" ReadShowEncode)) MyType
+    via DeriveTextEncode (Cased 'Pascal 'QuietSnake (DropPrefix "MyType" ReadShowEncode)) MyType
   deriving
     ( Aeson.FromJSON, Aeson.ToJSON
     , Cassava.FromField, Cassava.ToField
