@@ -66,9 +66,9 @@ checkCase (dec, enc) = do
 
 main :: IO ()
 main = do
-  myFailure <- traverse checkCase myCases
+  myFailures <- traverse checkCase myCases
   yourFailures <- traverse checkCase yourCases
-  let failures = sum (myFailure <> yourFailures)
+  let failures = sum (myFailures <> yourFailures)
   if failures == 0
     then putStrLn "All tests passed."
     else putStrLn $ "There were " <> show failures <> " failures."

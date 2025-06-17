@@ -17,11 +17,7 @@ extra-source-files:
   README.md
 
 tested-with:
-    GHC == 9.10.2
-  , GHC == 9.8.4
-  , GHC == 9.6.7
-  , GHC == 9.4.8
-  , GHC == 9.2.8
+  GHC ==9.2.8 || ==9.4.8 || ==9.6.7 || ==9.8.4 || ==9.10.2
 
 source-repository head
   type:     git
@@ -183,16 +179,10 @@ test-suite dev
   ghc-options:    -Wno-orphans
   main-is:        Main.hs
   hs-source-dirs:
-    src/text-encode
-    src/text-encode-aeson
-    src/text-encode-cassava
-    src/text-encode-http-api-data
-    src/text-encode-persistent
-    src/text-encode-postgresql-simple
-    src/text-encode-sqlite-simple
-    src/dev
-    src/dev-main
-
+    src/text-encode src/text-encode-aeson src/text-encode-cassava
+    src/text-encode-http-api-data src/text-encode-persistent
+    src/text-encode-postgresql-simple src/text-encode-sqlite-simple
+    src/dev src/dev-main
 
   -- cabal-fmt: expand src/text-encode
   -- cabal-fmt: expand src/text-encode-aeson
