@@ -1,0 +1,7 @@
+--command="cabal repl test:dev --ghc-options=-ignore-dot-ghci"
+--outputfile=".ghcid-out.json"
+--no-height-limit
+--reverse-errors
+--clear
+--restart=text-encode.cabal
+--allow-eval
