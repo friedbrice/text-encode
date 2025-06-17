@@ -16,16 +16,16 @@ extra-source-files:
   CHANGELOG.md
   README.md
 
-source-repository head
-  type:     git
-  location: https://github.com/friedbrice/text-encode
-
 tested-with:
   , GHC == 9.10.2
   , GHC == 9.8.4
   , GHC == 9.6.7
   , GHC == 9.4.8
   , GHC == 9.2.8
+
+source-repository head
+  type:     git
+  location: https://github.com/friedbrice/text-encode
 
 common dialect
   ghc-options:        -Wall
