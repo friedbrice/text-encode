@@ -4,18 +4,27 @@ module Text.Encode.PostgresqlSimple (
 
 import Text.Encode
 
+import Control.Exception
 import Data.Typeable
 
 import Database.PostgreSQL.Simple.FromField
 import Database.PostgreSQL.Simple.ToField
 
+newtype FromFieldViaTextEncodeError = FromFieldViaTextEncodeError String
+  deriving (Show)
+
+instance Exception FromFieldViaTextEncodeError
+
 instance (TextEncode a, Typeable a) => FromField (ViaTextEncode a) where
   {-# INLINE fromField #-}
-  fromField = undefined
+  fromField x y =
+    either (conversionError . FromFieldViaTextEncodeError) (pure . ViaTextEncode)
+      . decodeByteString
+      =<< fromField x y
 
 instance (TextEncode a, Typeable a) => ToField (ViaTextEncode a) where
   {-# INLINE toField #-}
-  toField = undefined
+  toField (ViaTextEncode x) = toField $ encodeByteString @a x
 
 data PostgresqlSimpleEncode
 
