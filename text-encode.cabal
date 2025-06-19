@@ -1,4 +1,4 @@
-cabal-version:      2.2
+cabal-version:      3.0
 name:               text-encode
 version:            0.1.0.0
 homepage:           https://github.com/friedbrice/text-encode#readme
@@ -9,12 +9,15 @@ copyright:          Copyright Daniel Brice
 license:            BSD-3-Clause
 license-file:       LICENSE
 build-type:         Simple
-description:
+category:           Serialization
+synopsis:
   Classes and newtypes for deriving uniform textual encodings.
 
-extra-source-files:
-  README.md
+description:
+  Classes and newtypes for deriving uniform textual encodings.
+  See the Text.Encode module documentation for details and usage examples.
 
+extra-source-files: README.md
 tested-with:
   GHC ==9.2.8 || ==9.4.8 || ==9.6.7 || ==9.8.4 || ==9.10.2
 
@@ -24,7 +27,7 @@ source-repository head
 
 common dialect
   ghc-options:        -Wall
-  build-depends:      base >=4.15 && <5
+  build-depends:      base >=4.16 && <5
   default-language:   Haskell2010
   default-extensions:
     AllowAmbiguousTypes
@@ -41,7 +44,7 @@ common dialect
     UndecidableInstances
 
 common opts-dist
-  ghc-options: -O2 -Werror
+  ghc-options: -O2
 
 common opts-dev
   ghc-options:        -O0 -Wwarn
@@ -51,37 +54,43 @@ common opts-dev
 
 common deps-lib
   build-depends:
-    , bytestring
-    , casing
-    , text
+    , bytestring  >=0.11 && <0.13
+    , casing      >=0.1  && <0.2
+    , text        >=1.2  && <2.2
 
 common deps-aeson
   build-depends:
-    , aeson
-    , bytestring
-    , text
+    , aeson       >=2.0  && <2.3
+    , bytestring  >=0.11 && <0.13
+    , text        >=1.2  && <2.2
 
 common deps-cassava
   build-depends:
-    , bytestring
-    , cassava
-    , text
+    , bytestring  >=0.11 && <0.13
+    , cassava     >=0.5  && <0.6
+    , text        >=1.2  && <2.2
 
 common deps-http-api-data
   build-depends:
-    , bytestring
-    , http-api-data
-    , http-types
-    , text
+    , bytestring     >=0.11 && <0.13
+    , http-api-data  >=0.4  && <0.7
+    , http-types     >=0.12 && <0.13
+    , text           >=1.2  && <2.2
 
 common deps-persistent
-  build-depends: persistent
+  build-depends:
+    , persistent  >=2.13 && <2.18
+    , text        >=1.2  && <2.2
 
 common deps-postgresql-simple
-  build-depends: postgresql-simple
+  build-depends:
+    , postgresql-simple  >=0.6 && <0.8
+    , text               >=1.2 && <2.2
 
 common deps-sqlite-simple
-  build-depends: sqlite-simple
+  build-depends:
+    , sqlite-simple  >=0.4 && <0.5
+    , text           >=1.2 && <2.2
 
 common deps-dev
 
