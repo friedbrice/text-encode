@@ -5,14 +5,13 @@ module Text.Encode.Persistent (
 
 import Text.Encode
 
-import Data.Typeable
-import Data.Coerce
 import Data.Bifunctor
+import Data.Coerce
+import Data.Text qualified as T
+import Data.Text.Encoding qualified as TE
+import Data.Typeable
 import Database.Persist.Class
 import Database.Persist.PersistValue
-
-import qualified Data.Text as T
-import qualified Data.Text.Encoding as TE
 
 instance (TextEncode a, Typeable a) => PersistField (ViaTextEncode a) where
   {-# INLINE toPersistValue #-}

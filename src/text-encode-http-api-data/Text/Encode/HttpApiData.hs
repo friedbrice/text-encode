@@ -7,11 +7,10 @@ import Text.Encode
 
 import Data.Bifunctor (first)
 import Data.Coerce (coerce)
+import Data.Text qualified as T
+import Data.Text.Encoding qualified as TE
 import Web.FormUrlEncoded (FromFormKey (..), ToFormKey (..))
 import Web.HttpApiData (FromHttpApiData (..), ToHttpApiData (..))
-
-import qualified Data.Text as T
-import qualified Data.Text.Encoding as TE
 
 instance TextEncode a => ToFormKey (ViaTextEncode a) where
   toFormKey = coerce $ encodeText @a

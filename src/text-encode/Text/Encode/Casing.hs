@@ -3,7 +3,7 @@ module Text.Encode.Casing (
   CaseConversion(..),
 ) where
 
-import qualified Text.Casing as C
+import Text.Casing qualified as C
 
 data Casing
   = Camel

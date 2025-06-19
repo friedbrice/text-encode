@@ -53,16 +53,15 @@ module Text.Encode (
 import Text.Encode.Casing
 
 import Control.Monad (guard, (<=<))
+import Data.ByteString.Char8 qualified as C8
+import Data.ByteString.Lazy.Char8 qualified as LC8
 import Data.Coerce (coerce)
 import Data.Kind (Type)
+import Data.Text qualified as T
+import Data.Text.Lazy qualified as LT
 import Data.Typeable (Typeable, Proxy (..), typeRep)
 import GHC.TypeLits (KnownSymbol, Symbol, symbolVal)
 import Text.Read (readMaybe)
-
-import qualified Data.ByteString.Char8 as C8
-import qualified Data.ByteString.Lazy.Char8 as LC8
-import qualified Data.Text as T
-import qualified Data.Text.Lazy as LT
 
 -- | An instance @'TextEncode' a@ defines a uniform textual representation for data of type @a@.
 --

@@ -5,11 +5,10 @@ module Text.Encode.Cassava (
 
 import Text.Encode
 
+import Data.ByteString.Char8 qualified as C8
 import Data.Coerce (coerce)
 import Data.Csv (FromField (..), ToField (..), runParser)
-
-import qualified Data.ByteString.Char8 as C8
-import qualified Data.Text.Encoding as T
+import Data.Text.Encoding qualified as T
 
 instance TextEncode a => FromField (ViaTextEncode a) where
   parseField = either fail pure . coerce (decodeByteString @a)

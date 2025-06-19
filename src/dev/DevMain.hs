@@ -1,19 +1,17 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module DevMain where
+module DevMain (main) where
 
 import Text.Encode
-
 import Text.Encode.Aeson ()
 import Text.Encode.Cassava ()
 import Text.Encode.Persistent ()
 
-import Data.Functor (($>))
+import Data.Aeson qualified as Aeson
 import Data.ByteString.Lazy (LazyByteString)
-
-import qualified Data.Aeson as Aeson
-import qualified Data.Csv as Cassava
-import qualified Database.Persist as Persistent
+import Data.Csv qualified as Cassava
+import Data.Functor (($>))
+import Database.Persist qualified as Persistent
 
 data MyType = MyTypeFoo | MyTypeBar | MyTypeFooBar
     deriving stock (Read, Show, Eq, Ord, Bounded, Enum)

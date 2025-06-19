@@ -8,12 +8,11 @@ import Text.Encode
 import Control.Exception (Exception, toException)
 import Control.Monad ((<=<))
 import Data.Coerce (coerce)
+import Data.Text qualified as T
 import Data.Typeable (Typeable)
 import Database.SQLite.Simple.FromField (FromField (..))
 import Database.SQLite.Simple.Ok (Ok (..))
 import Database.SQLite.Simple.ToField (ToField (..))
-
-import qualified Data.Text as T
 
 newtype TextEncodeSqliteSimpleError = TextEncodeSqliteSimpleError String
   deriving (Show)

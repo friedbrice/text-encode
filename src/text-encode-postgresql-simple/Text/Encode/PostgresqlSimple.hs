@@ -8,11 +8,10 @@ import Text.Encode
 import Control.Exception (Exception)
 import Control.Monad ((<=<))
 import Data.Coerce (coerce)
+import Data.Text qualified as T
 import Data.Typeable (Typeable)
 import Database.PostgreSQL.Simple.FromField (FromField (..), conversionError)
 import Database.PostgreSQL.Simple.ToField (ToField (..))
-
-import qualified Data.Text as T
 
 newtype TextEncodePostgresqlSimpleError = TextEncodePostgresqlSimpleError String
   deriving (Show)

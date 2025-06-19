@@ -14,12 +14,11 @@ import Data.Aeson (
   eitherDecode,
   encode
  )
+import Data.ByteString.Lazy.Char8 qualified as LC8
 import Data.Coerce (coerce)
+import Data.Text.Lazy qualified as LT
+import Data.Text.Lazy.Encoding qualified as LTE
 import Data.Typeable (Typeable)
-
-import qualified Data.ByteString.Lazy.Char8 as LC8
-import qualified Data.Text.Lazy as LT
-import qualified Data.Text.Lazy.Encoding as LTE
 
 instance (TextEncode a, Typeable a) => FromJSON (ViaTextEncode a) where
   parseJSON (String txt) = either fail pure $ decodeText txt
