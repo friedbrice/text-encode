@@ -5,25 +5,32 @@ module Text.Encode.Aeson (
 
 import Text.Encode
 
-import Data.Aeson
-import Data.Coerce
-import Data.Typeable
+import Data.Aeson (
+  FromJSON (..),
+  FromJSONKey (..),
+  ToJSON (..),
+  ToJSONKey (..),
+  Value (..),
+  eitherDecode,
+  encode
+ )
+import Data.Coerce (coerce)
+import Data.Typeable (Typeable)
 
 import qualified Data.ByteString.Lazy.Char8 as LC8
-import qualified Data.Text.Encoding as T
-import qualified Data.Text.Lazy.Encoding as LT
+import qualified Data.Text.Lazy as LT
+import qualified Data.Text.Lazy.Encoding as LTE
 
 instance (TextEncode a, Typeable a) => FromJSON (ViaTextEncode a) where
-  {-# INLINE parseJSON #-}
   parseJSON (String txt) = either fail pure $ decodeText txt
   parseJSON raw = fail $ typedError @a "parseJSON" "Expected String, got " $ encode raw
 
 instance TextEncode a => ToJSON (ViaTextEncode a) where
-  {-# INLINE toJSON #-}
   toJSON = String . encodeText
-
-  {-# INLINE toEncoding #-}
   toEncoding = toEncoding . encodeText
+
+  {-# INLINE toJSON #-}
+  {-# INLINE toEncoding #-}
 
 instance (TextEncode a, Typeable a) => FromJSONKey (ViaTextEncode a)
 instance TextEncode a => ToJSONKey (ViaTextEncode a)
@@ -31,32 +38,24 @@ instance TextEncode a => ToJSONKey (ViaTextEncode a)
 data JsonEncode
 
 instance (FromJSON a, ToJSON a) => TextEncode (DeriveTextEncode JsonEncode a) where
-  {-# INLINE encodeLazyByteString #-}
   encodeLazyByteString = coerce $ encode @a
-
-  {-# INLINE decodeLazyByteString #-}
   decodeLazyByteString = coerce $ eitherDecode @a
-
-  {-# INLINE encodeByteString #-}
   encodeByteString = LC8.toStrict . encodeLazyByteString
-
-  {-# INLINE decodeByteString #-}
   decodeByteString = decodeLazyByteString . LC8.fromStrict
-
-  {-# INLINE encodeString #-}
   encodeString = LC8.unpack <$> encodeLazyByteString
-
-  {-# INLINE decodeString #-}
   decodeString = decodeLazyByteString . LC8.pack
+  encodeLazyText = LTE.decodeLatin1 . encodeLazyByteString
+  decodeLazyText = decodeLazyByteString . LTE.encodeUtf8
+  encodeText = LT.toStrict . encodeLazyText
+  decodeText = decodeLazyText . LT.fromStrict
 
+  {-# INLINE encodeLazyByteString #-}
+  {-# INLINE decodeLazyByteString #-}
+  {-# INLINE encodeByteString #-}
+  {-# INLINE decodeByteString #-}
+  {-# INLINE encodeString #-}
+  {-# INLINE decodeString #-}
   {-# INLINE encodeLazyText #-}
-  encodeLazyText = LT.decodeLatin1 . encodeLazyByteString
-
   {-# INLINE decodeLazyText #-}
-  decodeLazyText = decodeLazyByteString . LT.encodeUtf8
-
   {-# INLINE encodeText #-}
-  encodeText = T.decodeLatin1 . encodeByteString
-
   {-# INLINE decodeText #-}
-  decodeText = decodeByteString . T.encodeUtf8

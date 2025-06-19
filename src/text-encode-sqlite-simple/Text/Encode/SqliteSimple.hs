@@ -1,48 +1,48 @@
 module Text.Encode.SqliteSimple (
   module Text.Encode,
+  SqliteSimpleEncode,
+  TextEncodeSqlSimpleError,
 ) where
 
 import Text.Encode
 
-import Data.Typeable
+import Control.Exception (Exception)
+import Data.Typeable (Typeable)
+import Database.SQLite.Simple.FromField (FromField (..))
+import Database.SQLite.Simple.ToField (ToField (..))
 
-import Database.SQLite.Simple.FromField
-import Database.SQLite.Simple.ToField
+import qualified Data.Text.Encoding as TE
+import qualified Data.ByteString.Char8 as BS
+
+newtype TextEncodeSqlSimpleError = TextEncodeSqlSimpleError String
+  deriving (Show)
+
+instance Exception TextEncodeSqlSimpleError
 
 instance (TextEncode a, Typeable a) => FromField (ViaTextEncode a) where
-  {-# INLINE fromField #-}
   fromField = undefined
 
+  {-# INLINE fromField #-}
+
 instance (TextEncode a, Typeable a) => ToField (ViaTextEncode a) where
-  {-# INLINE toField #-}
   toField = undefined
+
+  {-# INLINE toField #-}
 
 data SqliteSimpleEncode
 
 instance (FromField a, ToField a) => TextEncode (DeriveTextEncode SqliteSimpleEncode a) where
-  {-# INLINE encodeLazyByteString #-}
-  encodeLazyByteString = undefined
-
-  {-# INLINE decodeLazyByteString #-}
-  decodeLazyByteString = undefined
-
-  {-# INLINE encodeByteString #-}
   encodeByteString = undefined
-
-  {-# INLINE decodeByteString #-}
   decodeByteString = undefined
 
-  {-# INLINE encodeString #-}
-  encodeString = undefined
+  encodeText = TE.decodeLatin1 . encodeByteString
+  decodeText = decodeByteString . TE.encodeUtf8
+  encodeString = BS.unpack . encodeByteString
+  decodeString = decodeByteString . BS.pack
 
-  {-# INLINE decodeString #-}
-  decodeString = undefined
-
-  {-# INLINE encodeLazyText #-}
-  encodeLazyText = undefined
-
-  {-# INLINE decodeLazyText #-}
-  decodeLazyText = undefined
-
+  {-# INLINE encodeByteString #-}
+  {-# INLINE decodeByteString #-}
   {-# INLINE encodeText #-}
-  encodeText = undefined
+  {-# INLINE decodeText #-}
+  {-# INLINE encodeString #-}
+  {-# INLINE decodeString #-}

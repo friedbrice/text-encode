@@ -44,7 +44,10 @@ common opts-dist
   ghc-options: -O2 -Werror
 
 common opts-dev
-  ghc-options: -O0 -Wwarn
+  ghc-options:        -O0 -Wwarn
+  default-extensions:
+    InstanceSigs
+    PartialTypeSignatures
 
 common deps-lib
   build-depends:
@@ -89,7 +92,9 @@ library
   hs-source-dirs:  src/text-encode
 
   -- cabal-fmt: expand src/text-encode
-  exposed-modules: Text.Encode
+  exposed-modules:
+    Text.Encode
+    Text.Encode.Casing
 
 library text-encode-aeson
   import:          dialect
@@ -196,6 +201,7 @@ test-suite dev
     DevMain
     Text.Encode
     Text.Encode.Aeson
+    Text.Encode.Casing
     Text.Encode.Cassava
     Text.Encode.HttpApiData
     Text.Encode.Persistent

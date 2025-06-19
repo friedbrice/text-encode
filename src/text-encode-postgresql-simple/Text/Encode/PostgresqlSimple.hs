@@ -1,57 +1,48 @@
 module Text.Encode.PostgresqlSimple (
   module Text.Encode,
+  PostgresqlSimpleEncode,
+  TextEncodePostgresqlSimpleError,
 ) where
 
 import Text.Encode
 
-import Control.Exception
-import Data.Typeable
+import Control.Exception (Exception)
+import Data.Typeable (Typeable)
+import Database.PostgreSQL.Simple.FromField (FromField (..))
+import Database.PostgreSQL.Simple.ToField (ToField (..))
 
-import Database.PostgreSQL.Simple.FromField
-import Database.PostgreSQL.Simple.ToField
+import qualified Data.Text.Encoding as TE
+import qualified Data.ByteString.Char8 as BS
 
-newtype FromFieldViaTextEncodeError = FromFieldViaTextEncodeError String
+newtype TextEncodePostgresqlSimpleError = TextEncodePostgresqlSimpleError String
   deriving (Show)
 
-instance Exception FromFieldViaTextEncodeError
+instance Exception TextEncodePostgresqlSimpleError
 
 instance (TextEncode a, Typeable a) => FromField (ViaTextEncode a) where
+  fromField = undefined
+
   {-# INLINE fromField #-}
-  fromField x y =
-    either (conversionError . FromFieldViaTextEncodeError) (pure . ViaTextEncode)
-      . decodeByteString
-      =<< fromField x y
 
 instance (TextEncode a, Typeable a) => ToField (ViaTextEncode a) where
+  toField = undefined
+
   {-# INLINE toField #-}
-  toField (ViaTextEncode x) = toField $ encodeByteString @a x
 
 data PostgresqlSimpleEncode
 
 instance (FromField a, ToField a) => TextEncode (DeriveTextEncode PostgresqlSimpleEncode a) where
-  {-# INLINE encodeLazyByteString #-}
-  encodeLazyByteString = undefined
-
-  {-# INLINE decodeLazyByteString #-}
-  decodeLazyByteString = undefined
-
-  {-# INLINE encodeByteString #-}
   encodeByteString = undefined
-
-  {-# INLINE decodeByteString #-}
   decodeByteString = undefined
 
-  {-# INLINE encodeString #-}
-  encodeString = undefined
+  encodeText = TE.decodeLatin1 . encodeByteString
+  decodeText = decodeByteString . TE.encodeUtf8
+  encodeString = BS.unpack . encodeByteString
+  decodeString = decodeByteString . BS.pack
 
-  {-# INLINE decodeString #-}
-  decodeString = undefined
-
-  {-# INLINE encodeLazyText #-}
-  encodeLazyText = undefined
-
-  {-# INLINE decodeLazyText #-}
-  decodeLazyText = undefined
-
+  {-# INLINE encodeByteString #-}
+  {-# INLINE decodeByteString #-}
   {-# INLINE encodeText #-}
-  encodeText = undefined
+  {-# INLINE decodeText #-}
+  {-# INLINE encodeString #-}
+  {-# INLINE decodeString #-}
