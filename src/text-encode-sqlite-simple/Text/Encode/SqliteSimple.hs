@@ -1,48 +1,34 @@
 module Text.Encode.SqliteSimple (
   module Text.Encode,
-  SqliteSimpleEncode,
-  TextEncodeSqlSimpleError,
+  TextEncodeSqliteSimpleError,
 ) where
 
 import Text.Encode
 
-import Control.Exception (Exception)
+import Control.Exception (Exception, toException)
+import Control.Monad ((<=<))
+import Data.Coerce (coerce)
 import Data.Typeable (Typeable)
 import Database.SQLite.Simple.FromField (FromField (..))
+import Database.SQLite.Simple.Ok (Ok (..))
 import Database.SQLite.Simple.ToField (ToField (..))
 
-import qualified Data.Text.Encoding as TE
-import qualified Data.ByteString.Char8 as BS
+import qualified Data.Text as T
 
-newtype TextEncodeSqlSimpleError = TextEncodeSqlSimpleError String
+newtype TextEncodeSqliteSimpleError = TextEncodeSqliteSimpleError String
   deriving (Show)
 
-instance Exception TextEncodeSqlSimpleError
+instance Exception TextEncodeSqliteSimpleError
 
 instance (TextEncode a, Typeable a) => FromField (ViaTextEncode a) where
-  fromField = undefined
+  fromField =
+    either (Errors . pure . toException . TextEncodeSqliteSimpleError) (pure . ViaTextEncode)
+      . decodeText @a
+      <=< fromField @T.Text
 
   {-# INLINE fromField #-}
 
 instance (TextEncode a, Typeable a) => ToField (ViaTextEncode a) where
-  toField = undefined
+  toField = coerce $ toField . encodeText @a
 
   {-# INLINE toField #-}
-
-data SqliteSimpleEncode
-
-instance (FromField a, ToField a) => TextEncode (DeriveTextEncode SqliteSimpleEncode a) where
-  encodeByteString = undefined
-  decodeByteString = undefined
-
-  encodeText = TE.decodeLatin1 . encodeByteString
-  decodeText = decodeByteString . TE.encodeUtf8
-  encodeString = BS.unpack . encodeByteString
-  decodeString = decodeByteString . BS.pack
-
-  {-# INLINE encodeByteString #-}
-  {-# INLINE decodeByteString #-}
-  {-# INLINE encodeText #-}
-  {-# INLINE decodeText #-}
-  {-# INLINE encodeString #-}
-  {-# INLINE decodeString #-}
