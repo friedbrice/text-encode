@@ -1,39 +1,54 @@
+{- | Derive 'FromField' and 'ToField' using 'TextEncode'.
+
+@
+    data MyType = ...
+
+    instance 'TextEncode' MyType where ...
+
+    deriving via 'ViaTextEncode' MyType instance 'FromField' MyType
+    deriving via 'ViaTextEncode' MyType instance 'ToField' MyType
+@
+-}
 module Text.Encode.Cassava (
-  module Text.Encode,
-  CsvEncode,
+    module Text.Encode,
+    CassavaEncoding (..),
 ) where
 
 import Text.Encode
 
-import Data.ByteString.Char8 qualified as C8
 import Data.Coerce (coerce)
 import Data.Csv (FromField (..), ToField (..), runParser)
-import Data.Text.Encoding qualified as T
 
-instance TextEncode a => FromField (ViaTextEncode a) where
-  parseField = either fail pure . coerce (decodeByteString @a)
+instance (TextEncode a) => FromField (ViaTextEncode a) where
+    parseField = either fail pure . coerce (decodeByteString @a)
+    {-# INLINE parseField #-}
 
-  {-# INLINE parseField #-}
+instance (TextEncode a) => ToField (ViaTextEncode a) where
+    toField = coerce $ encodeByteString @a
+    {-# INLINE toField #-}
 
-instance TextEncode a => ToField (ViaTextEncode a) where
-  toField = coerce $ encodeByteString @a
+{- | Derive 'TextEncode' using 'FromField' and 'ToField'.
 
-  {-# INLINE toField #-}
+@
+    data MyType = ...
 
-data CsvEncode
+    instance 'FromField' MyType where ...
+    instance 'ToField' MyType where ...
 
-instance (FromField a, ToField a) => TextEncode (DeriveTextEncode CsvEncode a) where
-  encodeByteString = coerce $ toField @a
-  decodeByteString = coerce $ runParser . parseField @a
+    deriving via 'CassavaEncoding' MyType instance 'TextEncode' MyType
+@
 
-  encodeText = T.decodeLatin1 . encodeByteString
-  decodeText = decodeByteString . T.encodeUtf8
-  encodeString = C8.unpack . encodeByteString
-  decodeString = decodeByteString . C8.pack
+__N.B.__ Do not use this on any type for which you are using 'ViaTextEncode' to
+derive 'FromField' or 'ToField'. Your code will loop infinitely.
+-}
+newtype CassavaEncoding a = CassavaEncoding a
+    deriving (FromField, ToField) via a
 
-  {-# INLINE encodeByteString #-}
-  {-# INLINE decodeByteString #-}
-  {-# INLINE encodeText #-}
-  {-# INLINE decodeText #-}
-  {-# INLINE  encodeString #-}
-  {-# INLINE  decodeString #-}
+instance (FromField a, ToField a) => ByteStringPrimitives (CassavaEncoding a) where
+    byteStringEncode = coerce $ toField @a
+    byteStringDecode = coerce $ runParser . parseField @a
+
+    {-# INLINE byteStringEncode #-}
+    {-# INLINE byteStringDecode #-}
+
+deriving via ByteStringEncoding (CassavaEncoding a) instance (FromField a, ToField a) => TextEncode (CassavaEncoding a)

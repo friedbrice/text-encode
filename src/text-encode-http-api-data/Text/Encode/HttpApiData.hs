@@ -1,59 +1,76 @@
+{- | Derive 'FromFormKey', 'ToFormKey', 'FromHttpApiData', and 'ToHttpApiData'
+using 'TextEncode'.
+
+@
+    data MyType = ...
+
+    instance 'TextEncode' MyType where ...
+
+    deriving via 'ViaTextEncode' MyType instance 'FromHttpApiData' MyType
+    deriving via 'ViaTextEncode' MyType instance 'ToHttpApiData' MyType
+@
+-}
 module Text.Encode.HttpApiData (
-  module Text.Encode,
-  UrlEncode,
+    module Text.Encode,
+    HttpApiDataEncoding (..),
 ) where
 
 import Text.Encode
 
 import Data.Bifunctor (first)
 import Data.Coerce (coerce)
-import Data.Text qualified as T
-import Data.Text.Encoding qualified as TE
+import Text.Convert (asByteString, asString, asText)
 import Web.FormUrlEncoded (FromFormKey (..), ToFormKey (..))
 import Web.HttpApiData (FromHttpApiData (..), ToHttpApiData (..))
 
-instance TextEncode a => ToFormKey (ViaTextEncode a) where
-  toFormKey = coerce $ encodeText @a
+instance (TextEncode a) => ToFormKey (ViaTextEncode a) where
+    toFormKey = coerce $ encodeText @a
+    {-# INLINE toFormKey #-}
 
-  {-# INLINE toFormKey #-}
+instance (TextEncode a) => FromFormKey (ViaTextEncode a) where
+    parseFormKey = coerce $ first asText . decodeText @a
+    {-# INLINE parseFormKey #-}
 
-instance TextEncode a => FromFormKey (ViaTextEncode a) where
-  parseFormKey = coerce $ first T.pack . decodeText @a
+instance (TextEncode a) => ToHttpApiData (ViaTextEncode a) where
+    toUrlPiece = coerce $ encodeText @a
+    toHeader = asByteString . toUrlPiece
+    toQueryParam = toUrlPiece
 
-  {-# INLINE parseFormKey #-}
+    {-# INLINE toUrlPiece #-}
+    {-# INLINE toHeader #-}
+    {-# INLINE toQueryParam #-}
 
-instance TextEncode a => ToHttpApiData (ViaTextEncode a) where
-  toUrlPiece = coerce $ encodeText @a
-  toHeader = TE.encodeUtf8 . toUrlPiece
-  toQueryParam = toUrlPiece
+instance (TextEncode a) => FromHttpApiData (ViaTextEncode a) where
+    parseUrlPiece = coerce $ first asText . decodeText @a
+    parseHeader = parseUrlPiece . asText
+    parseQueryParam = parseUrlPiece
 
-  {-# INLINE toUrlPiece #-}
-  {-# INLINE toHeader #-}
-  {-# INLINE toQueryParam #-}
+    {-# INLINE parseUrlPiece #-}
+    {-# INLINE parseHeader #-}
+    {-# INLINE parseQueryParam #-}
 
-instance TextEncode a => FromHttpApiData (ViaTextEncode a) where
-  parseUrlPiece = coerce $ first T.pack . decodeText @a
-  parseHeader = parseUrlPiece . TE.decodeLatin1
-  parseQueryParam = parseUrlPiece
+{- | Derive 'TextEncode' using 'FromHttpApiData' and 'ToHttpApiData'.
 
-  {-# INLINE parseUrlPiece #-}
-  {-# INLINE parseHeader #-}
-  {-# INLINE parseQueryParam #-}
+@
+    data MyType = ...
 
-data UrlEncode
+    instance 'FromHttpApiData' MyType where ...
+    instance 'ToHttpApiData' MyType where ...
 
-instance (FromHttpApiData a, ToHttpApiData a) => TextEncode (DeriveTextEncode UrlEncode a) where
-  encodeText = coerce $ toUrlPiece @a
-  decodeText = coerce $ first T.unpack . parseUrlPiece @a
+    deriving via 'HttpApiDataEncoding' MyType instance 'TextEncode' MyType
+@
 
-  encodeString = T.unpack . encodeText
-  decodeString = decodeText . T.pack
-  encodeByteString = TE.encodeUtf8 . encodeText
-  decodeByteString = decodeText . TE.decodeLatin1
+__N.B.__ Do not use this on any type for which you are using 'ViaTextEncode' to
+derive 'FromHttpApiData' or 'ToHttpApiData'. Your code will loop infinitely.
+-}
+newtype HttpApiDataEncoding a = HttpApiDataEncoding a
+    deriving (FromHttpApiData, ToHttpApiData) via a
 
-  {-# INLINE encodeText #-}
-  {-# INLINE decodeText #-}
-  {-# INLINE encodeString #-}
-  {-# INLINE decodeString #-}
-  {-# INLINE encodeByteString #-}
-  {-# INLINE decodeByteString #-}
+instance (FromHttpApiData a, ToHttpApiData a) => TextPrimitives (HttpApiDataEncoding a) where
+    textEncode = toUrlPiece
+    textDecode = first asString . parseUrlPiece
+
+    {-# INLINE textEncode #-}
+    {-# INLINE textDecode #-}
+
+deriving via TextEncoding (HttpApiDataEncoding a) instance (FromHttpApiData a, ToHttpApiData a) => TextEncode (HttpApiDataEncoding a)

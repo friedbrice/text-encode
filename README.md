@@ -15,3 +15,7 @@ The subsidiary packages re-export the modules from the core package, so there is
 - `text-encode-sqlite-simple`
 
 See the module documentation in `Text.Encode` for usage.
+
+## Contribute
+
+We use Fourmolu and Hlint, each with their default configuration.

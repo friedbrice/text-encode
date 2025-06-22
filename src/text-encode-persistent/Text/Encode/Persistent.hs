@@ -1,42 +1,57 @@
+{- | Derive 'PersistField' using 'TextEncode'.
+
+@
+    data MyType = ...
+
+    instance 'TextEncode' MyType where ...
+
+    deriving via 'ViaTextEncode' MyType instance 'PersistField' MyType
+@
+-}
 module Text.Encode.Persistent (
-  module Text.Encode,
-  PersistentEncode,
+    module Text.Encode,
+    PersistentEncode (..),
 ) where
 
 import Text.Encode
 
-import Data.Bifunctor
-import Data.Coerce
-import Data.Text qualified as T
-import Data.Text.Encoding qualified as TE
-import Data.Typeable
-import Database.Persist.Class
-import Database.Persist.PersistValue
+import Data.Bifunctor (first)
+import Data.Coerce (coerce)
+import Data.Typeable (Typeable)
+import Database.Persist.Class (PersistField (..))
+import Database.Persist.PersistValue (PersistValue (..))
+import Text.Convert (asString, asText)
 
 instance (TextEncode a, Typeable a) => PersistField (ViaTextEncode a) where
-  {-# INLINE toPersistValue #-}
-  toPersistValue = coerce $ PersistText . encodeText @(ViaTextEncode a)
+    {-# INLINE toPersistValue #-}
+    toPersistValue = coerce $ PersistText . encodeText @(ViaTextEncode a)
 
-  fromPersistValue (PersistText bs) = coerce $ first T.pack $ decodeText @(ViaTextEncode a) bs
-  fromPersistValue x = Left $ T.pack $ "DeriveTextEncode PersistentEncode requires PersistText: " <> show x
+    fromPersistValue (PersistText bs) = coerce $ first asText $ decodeText @(ViaTextEncode a) bs
+    fromPersistValue x = Left $ asText $ "DeriveTextEncode PersistentEncode requires PersistText: " <> show x
 
-data PersistentEncode
+{- | Derive 'TextEncode' using 'PersistField'.
 
-instance PersistField a => TextEncode (DeriveTextEncode PersistentEncode a) where
-  encodeText (DeriveTextEncode x) =
-    case toPersistValue x of
-      (PersistText txt) -> txt
-      x' -> error $ "DeriveTextEncode PersistentEncode requires PersistText: " <> show x'
+@
+    data MyType = ...
 
-  decodeText = bimap T.unpack DeriveTextEncode . fromPersistValue . PersistText
+    instance 'FromPersistField' MyType where ...
 
-  encodeByteString = TE.encodeUtf8 . encodeText
-  decodeByteString = decodeText . TE.decodeLatin1
-  encodeString = T.unpack . encodeText
-  decodeString = decodeText . T.pack
+    deriving via 'PersistentEncoding' MyType instance 'TextEncode' MyType
+@
 
-  {-# INLINE decodeText #-}
-  {-# INLINE encodeByteString #-}
-  {-# INLINE decodeByteString #-}
-  {-# INLINE encodeString #-}
-  {-# INLINE decodeString #-}
+__N.B.__ Do not use this on any type for which you are using 'ViaTextEncode' to
+derive 'PersistField'. Your code will loop infinitely.
+-}
+newtype PersistentEncode a = PersistentEncode a
+    deriving (PersistField) via a
+
+instance (PersistField a) => TextPrimitives (PersistentEncode a) where
+    textEncode x =
+        case toPersistValue x of
+            (PersistText txt) -> txt
+            x' -> error $ "PersistentEncode requires PersistText: " <> show x'
+
+    textDecode = first asString . fromPersistValue . PersistText
+    {-# INLINE textDecode #-}
+
+deriving via TextEncoding (PersistentEncode a) instance (PersistField a) => TextEncode (PersistentEncode a)

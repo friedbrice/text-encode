@@ -1,14 +1,6 @@
 cabal-version:      3.0
 name:               text-encode
-version:            0.1.0.0
-homepage:           https://github.com/friedbrice/text-encode#readme
-bug-reports:        https://github.com/friedbrice/text-encode/issues
-author:             Daniel Brice
-maintainer:         danielbrice@gmail.com
-copyright:          Copyright Daniel Brice
-license:            BSD-3-Clause
-license-file:       LICENSE
-build-type:         Simple
+version:            0.2.0.0
 category:           Serialization
 synopsis:
   Classes and newtypes for deriving uniform textual encodings.
@@ -17,7 +9,15 @@ description:
   Classes and newtypes for deriving uniform textual encodings.
   See the Text.Encode module documentation for details and usage examples.
 
+homepage:           https://github.com/friedbrice/text-encode#readme
+bug-reports:        https://github.com/friedbrice/text-encode/issues
+author:             Daniel Brice
+maintainer:         danielbrice@gmail.com
+copyright:          Copyright Daniel Brice
+license:            BSD-3-Clause
+license-file:       LICENSE
 extra-source-files: README.md
+build-type:         Simple
 tested-with:
   GHC ==9.2.8 || ==9.4.8 || ==9.6.7 || ==9.8.4 || ==9.10.2
 
@@ -39,6 +39,7 @@ common dialect
     KindSignatures
     MultiParamTypeClasses
     ScopedTypeVariables
+    StandaloneDeriving
     TupleSections
     TypeApplications
     UndecidableInstances
@@ -57,18 +58,21 @@ common deps-lib
     , bytestring  >=0.11 && <0.13
     , casing      >=0.1  && <0.2
     , text        >=1.2  && <2.2
+    , text-convert >=0.1 && <0.2
 
 common deps-aeson
   build-depends:
     , aeson       >=2.0  && <2.3
     , bytestring  >=0.11 && <0.13
     , text        >=1.2  && <2.2
+    , text-convert >=0.1 && <0.2
 
 common deps-cassava
   build-depends:
     , bytestring  >=0.11 && <0.13
     , cassava     >=0.5  && <0.6
     , text        >=1.2  && <2.2
+    , text-convert >=0.1 && <0.2
 
 common deps-http-api-data
   build-depends:
@@ -76,21 +80,25 @@ common deps-http-api-data
     , http-api-data  >=0.4  && <0.7
     , http-types     >=0.12 && <0.13
     , text           >=1.2  && <2.2
+    , text-convert >=0.1 && <0.2
 
 common deps-persistent
   build-depends:
     , persistent  >=2.13 && <2.18
     , text        >=1.2  && <2.2
+    , text-convert >=0.1 && <0.2
 
 common deps-postgresql-simple
   build-depends:
     , postgresql-simple  >=0.6 && <0.8
     , text               >=1.2 && <2.2
+    , text-convert >=0.1 && <0.2
 
 common deps-sqlite-simple
   build-depends:
     , sqlite-simple  >=0.4 && <0.5
     , text           >=1.2 && <2.2
+    , text-convert >=0.1 && <0.2
 
 common deps-dev
 
